@@ -9,7 +9,7 @@
       </a-layout-content>
       <a-layout-footer class="footer">
         <a href="https://github.com/z2199889032" target="_blank">
-          byd
+          云影图库 ©2023 Created by z2199889032
         </a>
       </a-layout-footer>
     </a-layout>
@@ -17,11 +17,22 @@
 </template>
 
 <script setup lang="ts">
-import GlobalHeader from "@/components/GlobalHeader.vue";
+import GlobalHeader from '@/components/GlobalHeader.vue'
 </script>
 
-
 <style scoped>
+#basicLayout .header {
+  padding-inline: 20px;
+  margin-bottom: 16px;
+  color: unset;
+  background: white;
+}
+
+#basicLayout .content {
+  background: linear-gradient(to right, #fefefe, #fff);
+  margin-bottom: 28px;
+  padding: 20px;
+}
 #basicLayout .footer {
   background: #efefef;
   padding: 16px;
@@ -31,19 +42,4 @@ import GlobalHeader from "@/components/GlobalHeader.vue";
   right: 0;
   text-align: center;
 }
-
-#basicLayout .content {
-  background: linear-gradient(to right, #fefefe, #fff);
-  margin-bottom: 28px;
-  padding: 20px;
-}
-#basicLayout .header {
-  margin-top: -50px;
-  padding-inline: 20px;
-  margin-bottom: 16px;
-  color: unset;
-  background: white;
-}
-
 </style>
-
