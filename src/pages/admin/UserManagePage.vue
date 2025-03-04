@@ -52,46 +52,10 @@ import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import { deleteUserUsingPost, listUserVoByPageUsingPost} from '@/api/userController'
 
-
-const columns = [
-  {
-    title: 'id',
-    dataIndex: 'id',
-  },
-  {
-    title: '账号',
-    dataIndex: 'userAccount',
-  },
-  {
-    title: '用户名',
-    dataIndex: 'userName',
-  },
-  {
-    title: '头像',
-    dataIndex: 'userAvatar',
-  },
-  {
-    title: '简介',
-    dataIndex: 'userProfile',
-  },
-  {
-    title: '用户角色',
-    dataIndex: 'userRole',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-  },
-  {
-    title: '更新时间',
-    dataIndex: 'updateTime',
-  },
-  {
-    title: '操作',
-    key: 'action',
-  },
-]
-
+/**
+ * 删除用户
+ * @param id 用户ID
+ */
 const doDelete = async (id: number) => {
   const res = await deleteUserUsingPost({ id })
   console.log('res', res)
@@ -116,7 +80,9 @@ const searchParams = reactive<API.UserQueryRequest>({
   sortOrder: 'ascend',
 })
 
-// 获取数据
+/**
+ * 获取用户数据
+ */
 const fetchData = async () => {
   const res = await listUserVoByPageUsingPost({
     ...searchParams,
@@ -129,14 +95,19 @@ const fetchData = async () => {
   }
 }
 
-// 表格变化之后，重新获取数据
+/**
+ * 表格变化之后，重新获取数据
+ * @param page 分页信息
+ */
 const doTableChange = (page: any) => {
   searchParams.current = page.current
   searchParams.pageSize = page.pageSize
   fetchData()
 }
 
-// 搜索数据
+/**
+ * 搜索数据
+ */
 const doSearch = () => {
   // 重置页码
   searchParams.current = 1
@@ -154,10 +125,10 @@ const pagination = computed(() => {
   }
 })
 
+// 组件挂载时获取数据
 onMounted(() => {
   fetchData()
 })
 </script>
 
 <style scoped></style>
-
