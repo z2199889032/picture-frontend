@@ -4,7 +4,9 @@
       <!-- 图片预览 -->
       <a-col :sm="24" :md="16" :xl="18">
         <a-card title="图片预览">
-          <a-image :src="picture.url" style="max-height: 600px; object-fit: contain" />
+          <div class="image-container">
+            <a-image :src="picture.url" style="max-height: 600px; object-fit: contain" />
+          </div>
         </a-card>
       </a-col>
       <!-- 图片信息区域 -->
@@ -140,6 +142,7 @@ const doDelete = async () => {
   }
 }
 
+
 /**
  * 下载图片，引用的是file-saver库
  * npm install file-saver @types/file-saver --save
@@ -159,8 +162,15 @@ const doDownload = () => {
 
 </script>
 
-<style scoped>
-#pictureDetailPage {
+<style scoped>#pictureDetailPage {
   margin-bottom: 16px;
 }
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 </style>
+

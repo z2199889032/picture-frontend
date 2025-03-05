@@ -1,11 +1,9 @@
 <template>
   <div id="userManagePage">
     <a-flex justify="space-between">
-      <!-- 页面标题和创建图片按钮 -->
-      <h2 style="color: #1a1919;">图片管理</h2>
-      <a-button type="primary" href="/add_picture" target="_blank">+ 创建图片</a-button>
+   <h2 style="color: #1a1919;">图片管理</h2>
+         <a-button type="primary" href="/add_picture" target="_blank">+ 创建图片</a-button>
     </a-flex>
-    <!-- 搜索表单 -->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
       <a-form-item label="关键词" name="searchText">
         <a-input
@@ -39,17 +37,16 @@
       @change="doTableChange"
     >
       <template #bodyCell="{ column, record }">
-        <!-- 图片展示 -->
         <template v-if="column.dataIndex === 'url'">
           <a-image :src="record.url" :width="120" />
         </template>
-        <!-- 标签展示 -->
+        <!-- 标签 -->
         <template v-if="column.dataIndex === 'tags'">
           <a-space wrap>
             <a-tag v-for="tag in JSON.parse(record.tags || '[]')" :key="tag">{{ tag }}</a-tag>
           </a-space>
         </template>
-        <!-- 图片信息展示 -->
+        <!-- 图片信息 -->
         <template v-if="column.dataIndex === 'picInfo'">
           <div>格式：{{ record.picFormat }}</div>
           <div>宽度：{{ record.picWidth }}</div>
@@ -57,15 +54,12 @@
           <div>宽高比：{{ record.picScale }}</div>
           <div>大小：{{ (record.picSize / 1024).toFixed(2) }}KB</div>
         </template>
-        <!-- 创建时间格式化 -->
         <template v-else-if="column.dataIndex === 'createTime'">
           {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
-        <!-- 编辑时间格式化 -->
         <template v-else-if="column.dataIndex === 'editTime'">
           {{ dayjs(record.editTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
-        <!-- 操作按钮 -->
         <template v-else-if="column.key === 'action'">
           <a-space>
             <a-button type="link" :href="`/add_picture?id=${record.id}`" target="_blank"
@@ -88,7 +82,6 @@ import {
   listPictureVoByPageUsingPost,
 } from '@/api/pictureController'
 
-// 表格列定义
 const columns = [
   {
     title: 'id',
@@ -139,7 +132,6 @@ const columns = [
   },
 ]
 
-// 删除图片函数
 const doDelete = async (id: number) => {
   const res = await deletePictureUsingPost({ id })
   console.log('res', res)
@@ -152,11 +144,11 @@ const doDelete = async (id: number) => {
   }
 }
 
-// 数据列表和总记录数
+// 数据
 const dataList = ref([])
 const total = ref(0)
 
-// 搜索参数
+// 搜索条件
 const searchParams = reactive<API.PictureQueryRequest>({
   current: 1,
   pageSize: 10,
@@ -164,7 +156,7 @@ const searchParams = reactive<API.PictureQueryRequest>({
   sortOrder: 'descend',
 })
 
-// 分页配置
+// 分页参数
 const pagination = computed(() => {
   return {
     current: searchParams.current ?? 1,
@@ -175,7 +167,7 @@ const pagination = computed(() => {
   }
 })
 
-// 获取数据函数
+// 获取数据
 const fetchData = async () => {
   const res = await listPictureByPageUsingPost({
     ...searchParams,
@@ -188,26 +180,25 @@ const fetchData = async () => {
   }
 }
 
-// 页面加载时请求数据
+// 页面加载时请求一次
 onMounted(() => {
   fetchData()
 })
 
-// 搜索函数
+// 获取数据
 const doSearch = () => {
   // 重置搜索条件
   searchParams.current = 1
   fetchData()
 }
 
-// 表格分页变化处理函数
+// 表格变化处理
 const doTableChange = (page: any) => {
   searchParams.current = page.current
   searchParams.pageSize = page.pageSize
   fetchData()
 }
 
-// 页面加载时请求数据
 onMounted(() => {
   fetchData()
 })

@@ -1,6 +1,5 @@
 <template>
   <div id="addPicturePage">
-    <!-- 根据路由查询参数决定页面标题 -->
     <h2 style="margin-bottom: 16px">
       {{ route.query?.id ? '修改图片' : '创建图片' }}
     </h2>
@@ -53,19 +52,20 @@
 import PictureUpload from '@/components/PictureUpload.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
+
+import { useRoute, useRouter } from 'vue-router'
 import {
   editPictureUsingPost,
   getPictureVoByIdUsingGet,
   listPictureTagCategoryUsingGet,
-} from '@/api/pictureController.ts'
-import { useRoute, useRouter } from 'vue-router'
+} from '@/api/pictureController'
 
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditRequest>({})
 
 /**
  * 图片上传成功
- * @param newPicture 上传成功的图片信息
+ * @param newPicture
  */
 const onSuccess = (newPicture: API.PictureVO) => {
   picture.value = newPicture
@@ -76,7 +76,7 @@ const router = useRouter()
 
 /**
  * 提交表单
- * @param values 表单提交的值
+ * @param values
  */
 const handleSubmit = async (values: any) => {
   console.log(values)
@@ -105,6 +105,7 @@ const tagOptions = ref<string[]>([])
 
 /**
  * 获取标签和分类选项
+ * @param values
  */
 const getTagCategoryOptions = async () => {
   const res = await listPictureTagCategoryUsingGet()
@@ -133,16 +134,13 @@ const getTagCategoryOptions = async () => {
   }
 }
 
-// 页面加载时获取标签和分类选项
 onMounted(() => {
   getTagCategoryOptions()
 })
 
 const route = useRoute()
 
-/**
- * 获取老数据
- */
+// 获取老数据
 const getOldPicture = async () => {
   // 获取到 id
   const id = route.query?.id
@@ -161,7 +159,6 @@ const getOldPicture = async () => {
   }
 }
 
-// 页面加载时获取老数据
 onMounted(() => {
   getOldPicture()
 })

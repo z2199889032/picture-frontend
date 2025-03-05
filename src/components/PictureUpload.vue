@@ -1,5 +1,4 @@
 <template>
-  <!-- 图片上传组件 -->
   <div class="picture-upload">
     <a-upload
       list-type="picture-card"
@@ -7,9 +6,7 @@
       :custom-request="handleUpload"
       :before-upload="beforeUpload"
     >
-      <!-- 如果已上传图片，则显示图片 -->
       <img v-if="picture?.url" :src="picture?.url" alt="avatar" />
-      <!-- 否则显示上传或加载图标 -->
       <div v-else>
         <loading-outlined v-if="loading"></loading-outlined>
         <plus-outlined v-else></plus-outlined>
@@ -20,31 +17,26 @@
 
 </template>
 <script lang="ts" setup>
-// 导入 Vue 的响应式API和 Ant Design Vue 的图标组件
 import { ref } from 'vue'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import type { UploadProps } from 'ant-design-vue'
 import { message } from 'ant-design-vue'
-// 导入自定义的图片上传API
 import { uploadPictureUsingPost } from '@/api/pictureController'
 
-// 定义组件的属性接口
 interface Props {
   picture?: API.PictureVO
   onSuccess?: (newPicture: API.PictureVO) => void
 }
 
-// 解析组件属性
 const props = defineProps<Props>()
 
 /**
  * 上传图片
- * @param file 文件对象
+ * @param file
  */
 const handleUpload = async ({ file }: any) => {
   loading.value = true
   try {
-    // 构造上传参数
     const params = props.picture ? { id: props.picture.id } : {}
     const res = await uploadPictureUsingPost(params, {}, file)
     if (res.data.code === 0 && res.data.data) {
@@ -61,12 +53,11 @@ const handleUpload = async ({ file }: any) => {
   loading.value = false
 }
 
-// 定义加载状态
 const loading = ref<boolean>(false)
 
 /**
  * 上传前的校验
- * @param file 文件对象
+ * @param file
  */
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
   // 校验图片格式
@@ -83,7 +74,6 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
 }
 </script>
 <style scoped>
-/* 调整上传组件的样式 */
 .picture-upload :deep(.ant-upload) {
   width: 100% !important;
   height: 100% !important;

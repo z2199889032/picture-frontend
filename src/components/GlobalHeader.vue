@@ -19,7 +19,7 @@
           :items="items"
         />
       </a-col>
-      <!--用户信息栏-->
+      <!--      用户信息栏-->
       <a-col flex="120px">
         <div class="user-login-status">
           <div v-if="loginUserStore.loginUser.id">
@@ -53,12 +53,10 @@ import { type MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { userLogoutUsingPost } from '@/api/userController'
-
-// 初始化登录用户存储
 const loginUserStore = useLoginUserStore()
 loginUserStore.fetchLoginUser()
 
-// 用户注销函数
+// 用户注销
 const doLogout = async () => {
   const res = await userLogoutUsingPost()
   console.log(res)
@@ -103,7 +101,7 @@ const originItems = [
   },
 ]
 
-// 过滤菜单项，仅展示对当前用户可见的菜单
+// 过滤菜单项
 const filterMenus = (menus = [] as MenuProps['items']) => {
   return menus?.filter((menu) => {
     if (menu?.key?.startsWith('/admin')) {
@@ -115,24 +113,20 @@ const filterMenus = (menus = [] as MenuProps['items']) => {
     return true
   })
 }
-
-// 展示在菜单的路由
+//展示在菜单的路由
 const items = computed(() => filterMenus(originItems))
 
-// 初始化路由
 const router = useRouter()
-
 // 当前要高亮的菜单项
 const current = ref<string[]>([''])
 
-// 路由跳转事件处理函数
+// 路由跳转事件
 const doMenuClick = ({ key }: { key: string }) => {
   router.push({
     path: key,
   })
 }
 
-// 监听路由变化，更新当前高亮的菜单项
 router.afterEach((to) => {
   current.value = [to.path]
 })
