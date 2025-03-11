@@ -1,4 +1,3 @@
-<!--全局顶部栏-->
 <template>
   <div id="globalHeader">
     <a-row :wrap="false">
@@ -159,6 +158,7 @@ router.afterEach((to) => {
 .title-bar {
   display: flex;
   align-items: center;
+  margin-top: 10px; /* 增加顶部间距 */
 }
 
 .logo {
@@ -167,7 +167,15 @@ router.afterEach((to) => {
 
 .title {
   color: black;
-  font-size: 18px;
+  font-size: 25px;
   margin-left: 16px;
+  font-family: 'Noto Sans SC', sans-serif; /* 使用你选择的字体名称 */
+  font-weight: 300; /* 较轻的字体粗细 */
+  font-style: italic; /* 斜体 */
+  background: linear-gradient(to right, #00bfff, #0047ab); /* 蓝色渐变色 */
+  -webkit-background-clip: text; /* 将背景应用于文本 */
+  -webkit-text-fill-color: transparent; /* 使文本颜色透明以显示背景 */
+  line-height: 1.2; /* 行高 */
+  letter-spacing: 1px; /* 字符间距 */
 }
 </style>
