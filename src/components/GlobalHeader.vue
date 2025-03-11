@@ -6,7 +6,7 @@
         <router-link to="/">
           <div class="title-bar">
             <img class="logo" src="/logo.ico" alt="logo" />
-            <div class="title">云影图库</div>
+            <div class="title">逸云图库</div>
           </div>
         </router-link>
       </a-col>

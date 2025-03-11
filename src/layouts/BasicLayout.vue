@@ -12,7 +12,7 @@
       </a-layout>
       <a-layout-footer class="footer">
         <a href="https://github.com/z2199889032" target="_blank">
-          云影图库 ©2023 Created by z2199889032
+          逸云图库 ©2023 Created by z2199889032
         </a>
       </a-layout-footer>
     </a-layout>
