@@ -54,8 +54,15 @@
 </template>
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
-import { HomeOutlined ,UserOutlined,LogoutOutlined} from '@ant-design/icons-vue'
-import { type MenuProps, message, } from 'ant-design-vue'
+import {
+  HomeOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  GithubOutlined,
+  CloudUploadOutlined,
+  BarsOutlined,
+} from '@ant-design/icons-vue'
+import { type MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { userLogoutUsingPost } from '@/api/userController'
@@ -87,26 +94,31 @@ const originItems = [
   },
   {
     key: '/add_picture',
+    icon: () => h(CloudUploadOutlined),
     label: '创建图片',
     title: '创建图片',
   },
   {
     key: '/admin/UserManagePage',
+    icon: () => h(BarsOutlined),
     label: '用户管理',
     title: '用户管理',
   },
   {
     key: '/admin/pictureManage',
+    icon: () => h(BarsOutlined),
     label: '图片管理',
     title: '图片管理',
   },
   {
     key: '/admin/spaceManage',
+    icon: () => h(BarsOutlined),
     label: '空间管理',
     title: '空间管理',
   },
   {
     key: 'others',
+    icon: () => h(GithubOutlined),
     label: h('a', { href: 'https://github.com/z2199889032', target: '_blank' }, '仓库地址'),
     title: '仓库地址',
   },
