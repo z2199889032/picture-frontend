@@ -14,7 +14,6 @@
       </div>
     </a-upload>
   </div>
-
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
@@ -25,9 +24,9 @@ import { uploadPictureUsingPost } from '@/api/pictureController'
 
 interface Props {
   picture?: API.PictureVO
+  spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
 }
-
 const props = defineProps<Props>()
 
 /**
@@ -36,23 +35,33 @@ const props = defineProps<Props>()
  */
 const handleUpload = async ({ file }: any) => {
   loading.value = true
+
   try {
-    const params = props.picture ? { id: props.picture.id } : {}
+    // 构建上传参数
+    const params: API.PictureUploadRequest = props.picture ? { id: props.picture.id } : {}
+    params.spaceId = props.spaceId
+
+    // 调用上传接口
     const res = await uploadPictureUsingPost(params, {}, file)
+
     if (res.data.code === 0 && res.data.data) {
+      // 上传成功
       message.success('图片上传成功')
+
       // 将上传成功的图片信息传递给父组件
       props.onSuccess?.(res.data.data)
     } else {
+      // 上传失败
       message.error('图片上传失败，' + res.data.message)
     }
   } catch (error) {
+    // 捕获上传错误
     console.error('图片上传失败', error)
     message.error('图片上传失败，' + error.message)
   }
+
   loading.value = false
 }
-
 const loading = ref<boolean>(false)
 
 /**

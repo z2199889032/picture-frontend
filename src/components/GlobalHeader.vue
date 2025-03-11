@@ -34,6 +34,12 @@
                     <LogoutOutlined />
                     退出登录
                   </a-menu-item>
+                  <a-menu-item>
+                    <router-link to="/my_space">
+                      <UserOutlined />
+                      我的空间
+                    </router-link>
+                  </a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -48,8 +54,8 @@
 </template>
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
-import { HomeOutlined } from '@ant-design/icons-vue'
-import { type MenuProps, message } from 'ant-design-vue'
+import { HomeOutlined ,UserOutlined,LogoutOutlined} from '@ant-design/icons-vue'
+import { type MenuProps, message, } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { userLogoutUsingPost } from '@/api/userController'
@@ -93,6 +99,11 @@ const originItems = [
     key: '/admin/pictureManage',
     label: '图片管理',
     title: '图片管理',
+  },
+  {
+    key: '/admin/spaceManage',
+    label: '空间管理',
+    title: '空间管理',
   },
   {
     key: 'others',

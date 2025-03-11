@@ -33,25 +33,33 @@ const loading = ref<boolean>(false)
 /**
  * 上传图片
  */
-const handleUpload = async () => {
+const handleUpload = async ({ file }: any) => {
   loading.value = true
+
   try {
-    const params: API.PictureUploadRequest = { fileUrl: fileUrl.value }
-    if (props.picture) {
-      params.id = props.picture.id
-    }
-    const res = await uploadPictureByUrlUsingPost(params)
+    // 构建上传参数
+    const params: API.PictureUploadRequest = props.picture ? { id: props.picture.id } : {}
+    params.spaceId = props.spaceId
+
+    // 调用上传接口
+    const res = await uploadPictureUsingPost(params, {}, file)
+
     if (res.data.code === 0 && res.data.data) {
+      // 上传成功
       message.success('图片上传成功')
+
       // 将上传成功的图片信息传递给父组件
       props.onSuccess?.(res.data.data)
     } else {
+      // 上传失败
       message.error('图片上传失败，' + res.data.message)
     }
   } catch (error) {
+    // 捕获上传错误
     console.error('图片上传失败', error)
     message.error('图片上传失败，' + error.message)
   }
+
   loading.value = false
 }
 </script>

@@ -7,6 +7,7 @@
         <a-button type="primary" href="/add_picture/batch" target="_blank" ghost>+ 批量创建图片</a-button>
       </a-space>
     </a-flex>
+
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
       <a-form-item label="关键词" name="searchText">
         <a-input
@@ -201,9 +202,13 @@ const pagination = computed(() => {
 
 // 获取数据
 const fetchData = async () => {
-  const res = await listPictureByPageUsingPost({
-    ...searchParams,
-  })
+  const res = await listPictureByPageUsingPost(
+    {
+      ...searchParams,
+      nullSpaceId: true,
+    }
+  )
+
   if (res.data.data) {
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
