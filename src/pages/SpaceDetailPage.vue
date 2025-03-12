@@ -8,18 +8,21 @@
           + 创建图片
         </a-button>
         <a-tooltip
+          placement="topLeft"
           :title="`占用空间 ${formatSize(space.totalSize)} / ${formatSize(space.maxSize)}`"
         >
           <a-progress
             type="circle"
-            :size="42"
+            :size="50"
             :percent="((space.totalSize * 100) / space.maxSize).toFixed(1)"
           />
         </a-tooltip>
       </a-space>
     </a-flex>
     <div style="margin-bottom: 16px" />
-
+    <!-- 搜索表单 -->
+    <PictureSearchForm :onSearch="onSearch" />
+    <div style="margin-bottom: 20px" />
     <!-- 图片列表 -->
     <PictureList :dataList="dataList" :loading="loading" :showOp="true" :onReload="fetchData" />
     <!-- 分页 -->
@@ -35,11 +38,12 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
+import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import { message } from 'ant-design-vue'
-import { listPictureVoByPageUsingPost } from '@/api/pictureController.ts'
+import { listPictureVoByPageUsingPost } from '@/api/pictureController'
 import { formatSize } from '@/utils'
 import PictureList from '@/components/PictureList.vue'
+import PictureSearchForm from '@/components/PictureSearchForm.vue'
 
 interface Props {
   id: string | number
@@ -74,12 +78,13 @@ const total = ref(0)
 const loading = ref(true)
 
 // 搜索条件
-const searchParams = reactive<API.PictureQueryRequest>({
+const searchParams = ref<API.PictureQueryRequest>({
   current: 1,
   pageSize: 12,
   sortField: 'createTime',
   sortOrder: 'descend',
 })
+
 
 // 获取数据
 const fetchData = async () => {
@@ -87,10 +92,10 @@ const fetchData = async () => {
   // 转换搜索参数
   const params = {
     spaceId: props.id,
-    ...searchParams,
+    ...searchParams.value,
   }
   const res = await listPictureVoByPageUsingPost(params)
-  if (res.data.code === 0 && res.data.data) {
+  if (res.data.data) {
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
   } else {
@@ -99,15 +104,26 @@ const fetchData = async () => {
   loading.value = false
 }
 
+
 // 页面加载时获取数据，请求一次
 onMounted(() => {
   fetchData()
 })
 
 // 分页参数
-const onPageChange = (page: number, pageSize: number) => {
-  searchParams.current = page
-  searchParams.pageSize = pageSize
+const onPageChange = (page, pageSize) => {
+  searchParams.value.current = page
+  searchParams.value.pageSize = pageSize
+  fetchData()
+}
+
+// 搜索
+const onSearch = (newSearchParams: API.PictureQueryRequest) => {
+  searchParams.value = {
+    ...searchParams.value,
+    ...newSearchParams,
+    current: 1,
+  }
   fetchData()
 }
 </script>
