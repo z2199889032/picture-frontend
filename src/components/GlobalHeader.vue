@@ -4,7 +4,7 @@
       <a-col flex="200px">
         <router-link to="/">
           <div class="title-bar">
-            <img class="logo" src="/logo.ico" alt="logo" />
+            <img class="logo" src="/logo.png" alt="logo" />
             <div class="title">逸云图库</div>
           </div>
         </router-link>
@@ -162,7 +162,8 @@ router.afterEach((to) => {
 }
 
 .logo {
-  height: 48px;
+  height: 50px;
+  width: 60px;
 }
 
 .title {
