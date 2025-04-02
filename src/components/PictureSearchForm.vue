@@ -67,7 +67,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
 import dayjs from 'dayjs'
-import { listPictureTagCategoryUsingGet } from '@/api/pictureController'
+import { listPictureTagCategoryUsingGet, searchPictureByColorUsingPost } from '@/api/pictureController'
 import { message } from 'ant-design-vue'
 
 interface Props {
@@ -132,6 +132,7 @@ const getTagCategoryOptions = async () => {
     message.error('加载选项失败，' + res.data.message)
   }
 }
+
 
 // 清理
 const doClear = () => {

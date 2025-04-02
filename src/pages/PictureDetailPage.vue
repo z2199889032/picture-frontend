@@ -48,6 +48,19 @@
             <a-descriptions-item label="大小">
               {{ formatSize(picture.picSize) }}
             </a-descriptions-item>
+            <a-descriptions-item label="主色调">
+              <a-space>
+                {{ picture.picColor ?? '-' }}
+                <div
+                  v-if="picture.picColor"
+                  :style="{
+                    backgroundColor: toHexColor(picture.picColor),
+                    width: '16px',
+                    height: '16px',
+                  }"
+                />
+              </a-space>
+            </a-descriptions-item>
           </a-descriptions>
           <!-- 图片操作 -->
           <a-space wrap>
@@ -75,10 +88,9 @@ import { computed, h, onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { DeleteOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
-import { downloadImage, formatSize } from '@/utils'
+import { downloadImage, formatSize, toHexColor } from '@/utils'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController'
-
 
 interface Props {
   id: string | number
@@ -142,7 +154,6 @@ const doDelete = async () => {
   }
 }
 
-
 /**
  * 下载图片，引用的是file-saver库
  * npm install file-saver @types/file-saver --save
@@ -159,10 +170,10 @@ const doDownload = () => {
   // 已登录，执行下载逻辑
   downloadImage(picture.value.url)
 }
-
 </script>
 
-<style scoped>#pictureDetailPage {
+<style scoped>
+#pictureDetailPage {
   margin-bottom: 16px;
 }
 
@@ -173,4 +184,3 @@ const doDownload = () => {
   height: 100%;
 }
 </style>
-
