@@ -13,8 +13,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(Antd);
-app.use(createPinia())
-app.mount('#app')
-
-
 app.use(VueCropper)
+
+
+app.mount('#app')
