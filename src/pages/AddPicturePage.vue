@@ -3,19 +3,28 @@
     <h2 style="margin-bottom: 16px">
       {{ route.query?.id ? '修改图片' : '创建图片' }}
     </h2>
-    <!-- 图片上传组件 -->
+    <a-typography-paragraph v-if="spaceId" type="secondary">
+      保存至空间：<a :href="`/space/${spaceId}`" target="_blank">{{ spaceId }}</a>
+    </a-typography-paragraph>
     <!-- 选择上传方式 -->
     <a-tabs v-model:activeKey="uploadType">
       <a-tab-pane key="file" tab="文件上传">
+        <!-- 图片上传组件 -->
         <PictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
-
       <a-tab-pane key="url" tab="URL 上传" force-render>
+        <!-- URL 图片上传组件 -->
         <UrlPictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
+    <!-- 图片编辑 AI 编辑 + 编辑图片-->
     <div v-if="picture" class="edit-bar">
-      <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+      <a-space size="middle">
+        <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+        <a-button type="primary" :icon="h(FullscreenOutlined)" @click="doImagePainting">
+          AI 扩图
+        </a-button>
+      </a-space>
       <ImageCropper
         ref="imageCropperRef"
         :imageUrl="picture?.url"
@@ -23,8 +32,13 @@
         :spaceId="spaceId"
         :onSuccess="onCropSuccess"
       />
+      <ImageOutPainting
+        ref="imageOutPaintingRef"
+        :picture="picture"
+        :spaceId="spaceId"
+        :onSuccess="onImageOutPaintingSuccess"
+      />
     </div>
-
     <!-- 图片信息表单 -->
     <a-form
       v-if="picture"
@@ -72,20 +86,61 @@
 import PictureUpload from '@/components/PictureUpload.vue'
 import { computed, h, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
-
-import { useRoute, useRouter } from 'vue-router'
+import { EditOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 import {
   editPictureUsingPost,
   getPictureVoByIdUsingGet,
   listPictureTagCategoryUsingGet,
 } from '@/api/pictureController'
+import { useRoute, useRouter } from 'vue-router'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import ImageCropper from '@/components/ImageCropper.vue'
-import { EditOutlined } from '@ant-design/icons-vue'
+import ImageOutPainting from "@/components/ImageOutPainting.vue";
+
+
 
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditRequest>({})
 const uploadType = ref<'file' | 'url'>('file')
+// 图片编辑弹窗引用
+const imageCropperRef = ref()
+// AI 扩图弹窗引用
+const imageOutPaintingRef = ref()
+const categoryOptions = ref<string[]>([])
+const tagOptions = ref<string[]>([])
+
+const router = useRouter()
+
+// 空间 id
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
+
+
+// AI 扩图
+const doImagePainting = () => {
+  if (imageOutPaintingRef.value) {
+    imageOutPaintingRef.value.openModal()
+  }
+}
+
+// 编辑成功事件
+const onImageOutPaintingSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
+
+
+// 编辑图片
+const doEditPicture = () => {
+  if (imageCropperRef.value) {
+    imageCropperRef.value.openModal()
+  }
+}
+
+// 编辑成功事件
+const onCropSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
 
 /**
  * 图片上传成功
@@ -96,12 +151,6 @@ const onSuccess = (newPicture: API.PictureVO) => {
   pictureForm.name = newPicture.name
 }
 
-const router = useRouter()
-
-// 空间 id
-const spaceId = computed(() => {
-  return route.query?.spaceId
-})
 /**
  * 提交表单
  * @param values
@@ -114,6 +163,7 @@ const handleSubmit = async (values: any) => {
   }
   const res = await editPictureUsingPost({
     id: pictureId,
+    spaceId: spaceId.value,
     ...values,
   })
   // 操作成功
@@ -124,12 +174,9 @@ const handleSubmit = async (values: any) => {
       path: `/picture/${pictureId}`,
     })
   } else {
-    message.error('获取标签分类列表失败，' + res.data.message)
+    message.error('创建失败，' + res.data.message)
   }
 }
-
-const categoryOptions = ref<string[]>([])
-const tagOptions = ref<string[]>([])
 
 /**
  * 获取标签和分类选项
@@ -138,33 +185,22 @@ const tagOptions = ref<string[]>([])
 const getTagCategoryOptions = async () => {
   const res = await listPictureTagCategoryUsingGet()
   if (res.data.code === 0 && res.data.data) {
-    // 设置分类选项
-    categoryOptions.value = (res.data.data.categoryList ?? []).map((data: string) => {
-      return {
-        value: data,
-        label: data,
-      }
-    })
-    // 设置标签选项
     tagOptions.value = (res.data.data.tagList ?? []).map((data: string) => {
       return {
         value: data,
         label: data,
       }
     })
-
-    // 默认选择分类为 categoryList 的第一个值
-    if (categoryOptions.value.length > 0) {
-      pictureForm.category = categoryOptions.value[0].value
-    }
+    categoryOptions.value = (res.data.data.categoryList ?? []).map((data: string) => {
+      return {
+        value: data,
+        label: data,
+      }
+    })
   } else {
     message.error('获取标签分类列表失败，' + res.data.message)
   }
 }
-
-onMounted(() => {
-  getTagCategoryOptions()
-})
 
 const route = useRoute()
 
@@ -189,23 +225,8 @@ const getOldPicture = async () => {
 
 onMounted(() => {
   getOldPicture()
+  getTagCategoryOptions()
 })
-// 图片编辑弹窗引用
-const imageCropperRef = ref()
-
-// 编辑图片
-const doEditPicture = () => {
-  if (imageCropperRef.value) {
-    imageCropperRef.value.openModal()
-  }
-}
-
-// 编辑成功事件
-const onCropSuccess = (newPicture: API.PictureVO) => {
-  picture.value = newPicture
-}
-
-
 </script>
 
 <style scoped>
@@ -213,9 +234,11 @@ const onCropSuccess = (newPicture: API.PictureVO) => {
   max-width: 720px;
   margin: 0 auto;
 }
+
 #addPicturePage .edit-bar {
   text-align: center;
   margin: 16px 0;
 }
 
 </style>
+
