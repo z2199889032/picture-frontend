@@ -30,10 +30,10 @@
               <template #overlay>
                 <a-menu>
                   <a-menu-item>
-                    <router-link to="/user/detail">
-                      <UserOutlined />
+                    <a @click="showUserDetail">
+                      <UserSwitchOutlined />
                       个人详情
-                    </router-link>
+                    </a>
                   </a-menu-item>
                   <a-menu-item>
                     <router-link to="/my_space">
@@ -56,6 +56,8 @@
       </a-col>
     </a-row>
   </div>
+  <!-- 添加用户详情模态框 -->
+  <UserDetailModal ref="userDetailModalRef" />
 </template>
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
@@ -66,11 +68,14 @@ import {
   GithubOutlined,
   CloudUploadOutlined,
   BarsOutlined,
+  UserSwitchOutlined
 } from '@ant-design/icons-vue'
 import { type MenuProps, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { userLogoutUsingPost } from '@/api/userController'
+import UserDetailModal from '@/components/UserDetailModal.vue'
+
 const loginUserStore = useLoginUserStore()
 loginUserStore.fetchLoginUser()
 
@@ -158,6 +163,15 @@ const doMenuClick = ({ key }: { key: string }) => {
 router.afterEach((to) => {
   current.value = [to.path]
 })
+// 用户详情模态框引用
+const userDetailModalRef = ref()
+
+// 显示用户详情模态框
+const showUserDetail = () => {
+  if (userDetailModalRef.value) {
+    userDetailModalRef.value.openModal()
+  }
+}
 </script>
 
 <style scoped>

@@ -94,6 +94,10 @@ const router = createRouter({
       path: '/user/detail',
       name: '个人详情',
       component: UserDetailPage,
+      meta: {
+        hideInMenu: true,
+        useModal: true
+      }
     },
 
 
