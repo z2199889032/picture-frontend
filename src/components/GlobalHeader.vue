@@ -25,7 +25,7 @@
             <a-dropdown>
               <a-space>
                 <a-avatar :src="loginUserStore.loginUser.userAvatar" />
-                {{ loginUserStore.loginUser.userName ?? '无名' }}
+                <div  class="font">{{ loginUserStore.loginUser.userName ?? '无名' }}</div>
               </a-space>
               <template #overlay>
                 <a-menu>
@@ -184,6 +184,12 @@ const showUserDetail = () => {
 .logo {
   height: 50px;
   width: 60px;
+}
+.font{
+  margin-top: 8px; /* 增加顶部间距 */
+  font-size: 18px;
+  font-weight: 400; /* 较轻的字体粗细 */
+
 }
 
 .title {

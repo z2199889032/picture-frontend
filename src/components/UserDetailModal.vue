@@ -20,6 +20,14 @@
       <a-spin :spinning="loading">
         <template v-if="loginUserStore.loginUser.id">
           <div class="info-container">
+            <a-button
+              type="primary"
+              shape="circle"
+              class="edit-button"
+              @click="handleEdit"
+            >
+              <template #icon><EditOutlined /></template>
+            </a-button>
             <div class="info-item">
               <span class="label">头像</span>
               <div class="avatar-wrapper">
@@ -50,12 +58,19 @@
       </a-spin>
     </a-card>
   </a-modal>
+
+  <UserInfoEditModal
+    v-model:visible="showEditModal"
+    @success="handleEditSuccess"
+  />
 </template>
 
 <script lang="ts" setup>
 import { useLoginUserStore } from '@/stores/useLoginUserStore'
 import { onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
+import { EditOutlined } from '@ant-design/icons-vue'
+import UserInfoEditModal from './UserInfoEditModal.vue'
 
 const loginUserStore = useLoginUserStore()
 const loading = ref(true)
@@ -85,6 +100,20 @@ const openModal = () => {
 // 关闭弹窗
 const closeModal = () => {
   visible.value = false
+}
+
+// 编辑用户信息
+const showEditModal = ref(false)
+const handleEdit = () => {
+  showEditModal.value = true
+}
+
+const handleEditSuccess = () => {
+  // 刷新用户信息
+  loading.value = true
+  loginUserStore.fetchLoginUser().finally(() => {
+    loading.value = false
+  })
 }
 
 // 暴露函数给父组件
@@ -295,5 +324,18 @@ defineExpose({
 .avatar-wrapper:hover {
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
   transform: scale(1.05);
+}
+
+.edit-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.edit-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
 }
 </style>

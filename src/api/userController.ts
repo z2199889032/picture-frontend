@@ -134,3 +134,36 @@ export async function updateUserUsingPost(
     ...(options || {}),
   })
 }
+
+/** updateUserInfo POST /api/user/update/info */
+export async function updateUserInfoUsingPost(
+  body: API.UserUpdateRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseBoolean_>('/api/user/update/info', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
+/** updateMyInfo POST /api/user/update/my */
+export async function updateMyInfoUsingPost(
+  body: API.UserUpdateInfoRequest,
+  file?: File,
+  options?: { [key: string]: any }
+) {
+  const formData = new FormData()
+  formData.append('userUpdateInfoRequest', new Blob([JSON.stringify(body)], { type: 'application/json' }))
+  if (file) {
+    formData.append('file', file)
+  }
+  return request<API.BaseResponseBoolean_>('/api/user/update/my', {
+    method: 'POST',
+    data: formData,
+    ...(options || {}),
+  })
+}
